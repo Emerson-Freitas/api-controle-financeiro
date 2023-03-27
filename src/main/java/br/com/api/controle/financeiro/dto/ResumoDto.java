@@ -11,7 +11,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class ResumoDto {
-    
+
+    public ResumoDto(BigDecimal valorTotalReceitaMes, BigDecimal valorTotalDespesaMes, BigDecimal saldoFinal){
+        this.valorTotalReceitaMes = valorTotalReceitaMes;
+        this.valorTotalDespesaMes = valorTotalDespesaMes;
+        this.saldoFinal = saldoFinal;
+    }
+
     private BigDecimal valorTotalReceitaMes;
 
     private BigDecimal valorTotalDespesaMes;

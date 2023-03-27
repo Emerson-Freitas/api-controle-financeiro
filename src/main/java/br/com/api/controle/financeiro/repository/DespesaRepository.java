@@ -1,5 +1,6 @@
 package br.com.api.controle.financeiro.repository;
 
+import br.com.api.controle.financeiro.dto.ValorDespesaPorCategoria;
 import br.com.api.controle.financeiro.model.DespesaModel;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,8 +37,10 @@ public interface DespesaRepository extends JpaRepository<DespesaModel, Long> {
             AND MONTH(d.data) = :mes""")
     List<DespesaModel> findByListaDespesasPorAnoMes(@Param("ano") int ano, @Param("mes") int mes);
 
-
-    @Query(value = "SELECT categoria_despesa, SUM(valor) FROM despesas WHERE YEAR(data) = ?1 AND MONTH(data) = ?2 GROUP BY categoria_despesa", nativeQuery = true)
-    Map<String, BigDecimal> valorTotalGastoPorCategoria(int ano, int mes);
-
+    @Query(value = """
+            SELECT categoria_despesa, SUM(valor)\s
+            FROM despesas\s
+            WHERE YEAR(data) = :ano AND MONTH(data) = :mes\s
+            GROUP BY categoria_despesa""", nativeQuery = true)
+    List<Object[]> valorTotalGastoPorCategoria(@Param("ano") int ano, @Param("mes") int mes);
 }

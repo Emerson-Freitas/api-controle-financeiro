@@ -46,17 +46,20 @@ public class ResumoService {
         return valorReceitasMes.subtract(valorDespesasMes);
     }
 
-    public List<ValorDespesaPorCategoria> valorGastoPorCategoria(int ano, int mes){
-        Map<String, BigDecimal> gastoPorCategoria = despesaRepository.valorTotalGastoPorCategoria(ano, mes);
+    public List<ValorDespesaPorCategoria> valorDespesaPorCategorias(int ano, int mes){
+        List<Object[]> gastoPorCategoria = despesaRepository.valorTotalGastoPorCategoria(ano, mes);
 
-        List<ValorDespesaPorCategoria> listaValorDespesaPorCategorias = new ArrayList<>();
+        List<ValorDespesaPorCategoria> categorias = new ArrayList<>();
 
-        gastoPorCategoria.forEach((categoria, valor) -> {
+        gastoPorCategoria.forEach(linha -> {
+            String categoria = (String) linha[0];
+            BigDecimal valor = (BigDecimal) linha[1];
+
             ValorDespesaPorCategoria despesaPorCategoria = new ValorDespesaPorCategoria(categoria, valor);
-            listaValorDespesaPorCategorias.add(despesaPorCategoria);
+            categorias.add(despesaPorCategoria);
         });
 
-        return listaValorDespesaPorCategorias;
+        return categorias;
     }
 
     public ResumoDto resumoMes(int ano, int mes){
@@ -64,7 +67,7 @@ public class ResumoService {
         var calculoValorReceitas = calculaValorReceitasMes(ano, mes);
         var calculoValorDespesas = calculaValorDespesasMes(ano, mes);
         var saldoFinalMes = saldoFinalDoMes(calculoValorReceitas, calculoValorDespesas);
-        List<ValorDespesaPorCategoria> despesaPorCategorias = valorGastoPorCategoria(ano, mes);
+        List<ValorDespesaPorCategoria> despesaPorCategorias = valorDespesaPorCategorias(ano, mes);
 
         return new ResumoDto(calculoValorReceitas, calculoValorDespesas, saldoFinalMes, despesaPorCategorias);
     }
